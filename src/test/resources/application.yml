@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+#    type: com.alibaba.druid.pool.DruidDataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:p6spy:mysql://127.0.0.1:3306/ad-data?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC
+    username: kedacom
+    password: kedacom
+#    druid:
+#      validation-query: select 1
+      
+    
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      insert-strategy: not-empty
+      update-strategy: not-empty
+      select-strategy: not-empty
+      table-underline: true
+#      db-type: mysql
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath:/mapper/*.xml
+  type-handlers-package: com.kedacom.tz.sh.typeHandlers
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

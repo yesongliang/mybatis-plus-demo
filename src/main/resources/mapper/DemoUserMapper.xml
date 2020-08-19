@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedacom.tz.sh.mapper.DemoUserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.kedacom.tz.sh.entity.DemoUser">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="age" property="age" />
+		<result column="email" property="email" />
+		<result column="password" property="password"
+			typeHandler="com.kedacom.tz.sh.typeHandlers.PasswordTypeHandler" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, name, age, email, password
+	</sql>
+
+	<insert id="insertUser"
+		parameterType="com.kedacom.tz.sh.entity.DemoUser"
+		useGeneratedKeys="true">
+		INSERT INTO demo_user
+		(name,age,email,password)
+		values(#{name},#{age},#{email},#{password,typeHandler=com.kedacom.tz.sh.typeHandlers.PasswordTypeHandler})
+	</insert>
+
+	<select id="selectUserById" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM demo_user WHERE
+		id =#{id}
+	</select>
+</mapper>
