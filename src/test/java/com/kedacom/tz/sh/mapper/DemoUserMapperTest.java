@@ -1,5 +1,6 @@
 package com.kedacom.tz.sh.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class DemoUserMapperTest {
 		QueryWrapper<DemoUser> wrapper = new QueryWrapper<>();
 		wrapper.like("name", "ye").lt("age", 40);
 
-		Page<DemoUser> page = new Page<>(1, 2);
+		Page<DemoUser> page = new Page<>(5000, 15);
 		page.addOrder(OrderItem.desc("age"));
 		demoUserMapper.selectPage(page, wrapper);
 
@@ -81,6 +82,48 @@ public class DemoUserMapperTest {
 		List<DemoUser> records = page.getRecords();
 		records.forEach(System.out::println);
 
+	}
+
+	/**
+	 * Mysql的分页查询十分简单，但是当数据量大的时候一般的分页就吃不消了。
+	 * 
+	 * 传统分页查询：SELECT c1,c2,cn... FROM table LIMIT n,m
+	 * 
+	 * MySQL的limit工作原理就是先读取前面n条记录，然后抛弃前n条，读后面m条想要的，所以n越大，偏移量越大，性能就越差。
+	 * 
+	 */
+	@Test
+	public void limitTest() {
+		// 1、尽量给出查询的大致范围
+		// SELECT c1,c2,cn... FROM table WHERE id>=20000 LIMIT 10;
+
+		// 2、子查询法
+		// SELECT c1,c2,cn... FROM table WHERE id>=(SELECT id FROM table LIMIT
+		// 20000,1)LIMIT 10;
+
+		// 3、高性能MySQL一书中提到的只读索引方法
+		// 优化前SQL:
+		// SELECT c1,c2,cn... FROM member ORDER BY last_active LIMIT 50,5
+		// 优化后SQL:
+		// SELECT c1, c2, cn ... FROM member INNER JOIN (SELECT member_id FROM member
+		// ORDER BY last_active LIMIT 50, 5) USING (member_id)
+		// 区别在于，优化前的SQL需要更多I/O浪费，因为先读索引，再读数据，然后抛弃无需的行。而优化后的SQL(子查询那条)只读索引(Cover
+		// index)就可以了，然后通过member_id读取需要的列
+
+		// 4、第一步用用程序读取出ID，然后再用IN方法读取所需记录
+		// SELECT id FROM table LIMIT 20000, 10;
+		// SELECT c1, c2, cn ... FROM table WHERE id IN (id1, id2, idn.. .)
+		// TODO 碰到带where条件的考虑使用复合索引
+		QueryWrapper<DemoUser> wrapper = new QueryWrapper<>();
+		wrapper.select("id");
+		Page<DemoUser> page = new Page<>(5000, 15);
+		demoUserMapper.selectPage(page, wrapper);
+		List<DemoUser> records = page.getRecords();
+		List<Long> idList = new ArrayList<>();
+		records.forEach(record -> idList.add(record.getId()));
+		List<DemoUser> selectBatchIds = demoUserMapper.selectBatchIds(idList);
+		page.setRecords(selectBatchIds);
+		log.info("page:{}", JSON.toJSONString(page));
 	}
 
 }
