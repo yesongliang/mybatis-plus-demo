@@ -1,5 +1,6 @@
 package com.kedacom.tz.sh.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
  *
  */
 @Configuration
+@MapperScan("com.kedacom.tz.sh.mapper")
 @ConditionalOnClass(value = { PaginationInterceptor.class })
 public class MybatisPlusConfig {
 	@Bean

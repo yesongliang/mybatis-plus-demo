@@ -40,8 +40,11 @@
 			<version>3.8.2</version>
 		</dependency>
 		<!-- 阿里数据库连接池 -->
-		<!-- <dependency> <groupId>com.alibaba</groupId> <artifactId>druid-spring-boot-starter</artifactId> 
-			<version>1.1.10</version> </dependency> -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.10</version>
+		</dependency>
 		<!-- 只能使用自定义的SQL (mybatis-spring版本太低，在引入mybatis-plus等其他需要org.mybatis.logging.XXXXX的包时便会报错,改成2.0.0或以上版本应该就可以了) -->
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
@@ -98,11 +101,21 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.0</version>
 		</dependency>
+		<!-- AOP -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 		<!-- 测试 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<build>
