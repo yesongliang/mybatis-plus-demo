@@ -17,7 +17,7 @@ import com.kedacom.tz.sh.vo.CommonResponse;
  * @author ysl
  *
  */
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.kedacom.tz.sh.controller")
 public class CommonResponseDataAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override
